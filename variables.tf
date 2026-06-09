@@ -25,3 +25,12 @@ variable "owner" {
     error_message = "owner doit etre un email valide."
   }
 }
+variable "tags" {
+  type        = map(string)
+  description = "Tags supplementaires appliques aux ressources"
+
+  default = {
+    CostCenter = "formation"
+    Team       = "devops"
+  }
+}

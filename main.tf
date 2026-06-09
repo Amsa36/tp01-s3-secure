@@ -2,6 +2,7 @@
 # Contexte AWS et randomisation du nom
 # -----------------------------------------------------------------------------
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 resource "random_pet" "suffix" {
   length    = 2
@@ -9,7 +10,9 @@ resource "random_pet" "suffix" {
 }
 
 locals {
-  bucket_name = "${var.bucket_prefix}-${data.aws_caller_identity.current.account_id}-${random_pet.suffix.id}"
+  name_prefix = "${var.bucket_prefix}-${var.environment}"
+
+  bucket_name = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-${random_pet.suffix.id}"
 }
 
 # -----------------------------------------------------------------------------
@@ -18,10 +21,14 @@ locals {
 resource "aws_s3_bucket" "main" {
   bucket = local.bucket_name
 
-  tags = {
-    Owner = var.owner
-    Name  = local.bucket_name
-  }
+  tags = merge(
+    var.tags,
+    {
+      Owner       = var.owner
+      Name        = local.bucket_name
+      Environment = var.environment
+    }
+  )
 }
 # -----------------------------------------------------------------------------
 # Versioning

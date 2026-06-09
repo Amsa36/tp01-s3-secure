@@ -1,0 +1,12 @@
+# Exemple de configuration
+
+owner = "votre.email@example.com"
+
+bucket_prefix = "formation-tp01"
+
+environment = "dev"
+
+tags = {
+  CostCenter = "formation"
+  Team       = "devops"
+}
